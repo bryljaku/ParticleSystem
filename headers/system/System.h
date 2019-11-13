@@ -17,11 +17,11 @@
 #endif
 class System {
 protected:
-    Container container;
     size_t maxNumberOfParticles;
     std::vector<std::shared_ptr<Emitter>> emitters;
     std::vector<std::shared_ptr<Updater>> updaters;
 public:
+    Container container;
     explicit System(size_t maxNumberOfParticles);
     ~System() { }
     

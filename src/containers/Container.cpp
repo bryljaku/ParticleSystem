@@ -7,7 +7,7 @@
 #include <algorithm>
 #include <memory>
 #include <bits/unique_ptr.h>
-
+#include "glm/vec3.hpp"
 
 void Container::generate(size_t maxNumberOfParticles) {
     maxSize = maxNumberOfParticles;

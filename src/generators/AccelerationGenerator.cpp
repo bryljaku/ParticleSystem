@@ -7,5 +7,5 @@
 
 void AccelerationGenerator::generate(Container *p, size_t startId, size_t endId) {
     for (size_t i = startId; i < endId; i++)
-        p->velocity[i] = glm::linearRand(minAcceleration, maxAcceleration);
+        p->acceleration[i] = glm::linearRand(minAcceleration, maxAcceleration);
 }

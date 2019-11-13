@@ -1,6 +1,3 @@
-
-
-
 #include <vector>
 #include <cstdlib>
 #include <glm/vec3.hpp>
@@ -26,7 +23,7 @@
 struct Point
 {
     glm::vec4 position;
-    glm::vec3 color;
+    glm::vec4 color;
 };
 std::vector< Point > points;
 std::shared_ptr<System> syst;
@@ -46,8 +43,8 @@ void display(void)
     glColor3ub( 255, 255, 255 );
     glEnableClientState( GL_VERTEX_ARRAY );
     glEnableClientState( GL_COLOR_ARRAY );
-    glVertexPointer( 2, GL_FLOAT, sizeof(Point), &syst.get()->particles()->position.get()->x );
-    glColorPointer( 4, GL_FLOAT, sizeof(Point), &points[0].color.r);
+    glVertexPointer( 4, GL_FLOAT, sizeof(glm::vec4), &syst.get()->container.position.get()[0].x);
+    glColorPointer( 4, GL_FLOAT, sizeof(glm::vec4), &syst.get()->container.color.get()[0].x);
     glPointSize( 3.0 );
     glDrawArrays( GL_POINTS, 0, points.size() );
     glDisableClientState( GL_VERTEX_ARRAY );
@@ -73,7 +70,6 @@ int main(int argc, char **argv)
     ageGenerator.get()->maxAge+=5.0;
     auto velocityGenerator = std::make_shared<VelocityGenerator>();
     auto accelerationGenerator = std::make_shared<AccelerationGenerator>();
-    accelerationGenerator.get()->maxAcceleration += 5.0;
     auto positionUpdater = std::make_shared<PositionUpdater>();
     auto velocityUpdater = std::make_shared<VelocityUpdater>();
     auto ageUpdater = std::make_shared<AgeUpdater>();
