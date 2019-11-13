@@ -10,6 +10,8 @@
 
 class PositionUpdater : public Updater {
 public:
+    int maxWidth;
+    int maxHeight;
     virtual void update(double dt, Container *p) override;
 };
 

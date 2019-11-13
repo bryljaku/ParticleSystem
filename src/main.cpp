@@ -7,12 +7,15 @@
 #include "../headers/generators/BasicPositionGenerator.h"
 #include "../headers/generators/BasicColorGenerator.h"
 #include "../headers/updaters/PositionUpdater.h"
+#include "../headers/updaters/ColorUpdater.h"
 #include "../headers/updaters/AgeUpdater.h"
 #include "../headers/updaters/VelocityUpdater.h"
 #include "../headers/generators/VelocityGenerator.h"
 #include "../headers/generators/AccelerationGenerator.h"
 #include "../headers/generators/AgeGenerator.h"
 #include "../headers/SOIL/SOIL.h"
+#include "../headers/updaters/ColorUpdater.h"
+
 #ifdef __APPLE__
 #include <OpenGL/OpenGL.h>
 	#include <GLUT/glut.h>
@@ -20,14 +23,31 @@
 #include <GL/glut.h>
 #endif
 
-struct Point
-{
-    glm::vec4 position;
-    glm::vec4 color;
-};
-std::vector< Point > points;
 std::shared_ptr<System> syst;
-
+void handle_keypress(unsigned char key, int x, int y)
+{
+    switch(key)
+    {
+        case 'a':
+        case 'A':
+            syst.get()->container.wakeParticle(10);
+            break;
+        
+        case 'd':
+        case 'D':
+            syst.get()->container.killParticle(10);
+            break;
+        
+        case 's':
+        case 'S':
+            break;
+        
+        case 27:
+            exit(0);
+            break;
+    }
+    glutPostRedisplay();
+}
 void display(void)
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -39,20 +59,21 @@ void display(void)
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     
-    // draw
     glColor3ub( 255, 255, 255 );
     glEnableClientState( GL_VERTEX_ARRAY );
     glEnableClientState( GL_COLOR_ARRAY );
     glVertexPointer( 4, GL_FLOAT, sizeof(glm::vec4), &syst.get()->container.position.get()[0].x);
     glColorPointer( 4, GL_FLOAT, sizeof(glm::vec4), &syst.get()->container.color.get()[0].x);
-    glPointSize( 3.0 );
-    glDrawArrays( GL_POINTS, 0, points.size() );
+    glPointSize( 5 );
+    glEnable(GL_POINT_SMOOTH);
+    glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
+    glDrawArrays( GL_POINTS, 0, syst.get()->numberOfAliveParticles() );
     glDisableClientState( GL_VERTEX_ARRAY );
     glDisableClientState( GL_COLOR_ARRAY );
     
     glFlush();
     glutSwapBuffers();
-    syst.get()->update(100);
+    syst.get()->update(1);
 }
 
 void reshape(int w, int h)
@@ -67,12 +88,12 @@ int main(int argc, char **argv)
     syst = std::make_shared<System>(15000);
     auto colorGenerator = std::make_shared<BasicColorGenerator>();
     auto ageGenerator = std::make_shared<AgeGenerator>();
-    ageGenerator.get()->maxAge+=5.0;
     auto velocityGenerator = std::make_shared<VelocityGenerator>();
     auto accelerationGenerator = std::make_shared<AccelerationGenerator>();
     auto positionUpdater = std::make_shared<PositionUpdater>();
     auto velocityUpdater = std::make_shared<VelocityUpdater>();
     auto ageUpdater = std::make_shared<AgeUpdater>();
+    auto colorUpdater = std::make_shared<ColorUpdater>();
     emitter.get()->addGenerator(positionGenerator);
     emitter.get()->addGenerator(colorGenerator);
     emitter.get()->addGenerator(ageGenerator);
@@ -82,28 +103,15 @@ int main(int argc, char **argv)
     syst.get()->addUpdater(velocityUpdater);
     syst.get()->addUpdater(positionUpdater);
     syst.get()->addUpdater(ageUpdater);
+    syst.get()->addUpdater(colorUpdater);
 
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH | GLUT_DOUBLE);
-    
     glutInitWindowSize(640,480);
-    glutCreateWindow("Random Points");
-    
+    glutCreateWindow("Particle System");
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
-    
-    // populate points
-    for( size_t i = 0; i < 1000; ++i )
-    {
-        Point pt;
-        pt.position.x = -50 + (rand() % 100);
-        pt.position.y = -50 + (rand() % 100);
-        pt.color.r = rand() % 255;
-        pt.color.g = rand() % 255;
-        pt.color.b = rand() % 255;
-        pt.color.x = 255;
-        points.push_back(pt);
-    }
+    glutKeyboardFunc(handle_keypress);
     
     glutMainLoop();
     return 0;

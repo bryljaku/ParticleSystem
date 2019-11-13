@@ -11,8 +11,8 @@
 class AgeGenerator : public Generator{
 
 public:
-    float maxAge{0.0};
-    float minAge{5.0};
+    float maxAge{50.0};
+    float minAge{0.0};
     
     virtual void generate(Container *p, size_t startId, size_t endId) override;
 };
