@@ -12,6 +12,7 @@ void GravityUpdater::update(double dt, Container *p) {
     for (int i = 0; i < endId; i++){
             force.x = (gravityPoint.x - p->position[i].x) * timeDelta;
             force.y = (gravityPoint.y - p->position[i].y) * timeDelta;
+            force.z = (gravityPoint.z - p->position[i].z) * timeDelta;
             p->acceleration[i] = force;
     }
 }

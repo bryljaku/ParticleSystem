@@ -28,10 +28,10 @@
 const float DELTA = 2;
 const int NUMBER_OF_PARTICLES = 3000;
 const float LENGTH = 100.0;
-const int POINT_SIZE = 3;
+const int POINT_SIZE = 1;
 const int MIN_INIT_VELOCITY = 10;
 const int MAX_INIT_VELOCITY = 100;
-const int MAX_VELOCITY = 200;
+const int MAX_VELOCITY =500;
 
 const int MIN_MASS = 2;
 const int MAX_MASS = 8;
@@ -79,18 +79,10 @@ void handle_keypress(unsigned char key, int x, int y)
 void display(void)
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glOrtho(-LENGTH, LENGTH, -LENGTH, LENGTH, -LENGTH, LENGTH);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    
-    glColor3ub( 255, 255, 255 );
     glEnableClientState( GL_VERTEX_ARRAY );
     glEnableClientState( GL_COLOR_ARRAY );
     glVertexPointer( 2, GL_FLOAT, sizeof(glm::vec3), &syst.get()->container.position.get()[0].x);
-    glColorPointer( 4, GL_FLOAT, sizeof(glm::vec3), &syst.get()->container.color.get()[0].x);
+    glColorPointer( 3, GL_FLOAT, sizeof(glm::vec3), &syst.get()->container.color.get()[0].x);
     glPointSize( POINT_SIZE );
     glEnable(GL_POINT_SMOOTH);
     glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
@@ -99,7 +91,6 @@ void display(void)
     glDisableClientState( GL_COLOR_ARRAY );
     syst.get()->update(DELTA);
     
-    glFlush();
     glutSwapBuffers();
     glutPostRedisplay();
 }
@@ -109,30 +100,29 @@ void reshape(int w, int h)
     //setup windows width and height
     win_width = (w==0) ? 1 : w;
     win_height = (h==0) ? 1 : h;
-    
-    //Tell OpenGL how to convert from coordinates to pixel values
     glViewport(0, 0, win_width, win_height);
-    
-    //Switch to setting the camera perspective
     glMatrixMode(GL_PROJECTION);
-    
-    //Set the camera perspective
     glLoadIdentity(); //Reset the camera
     glOrtho(-LENGTH, LENGTH, -LENGTH, LENGTH, -LENGTH, LENGTH);
-    
     glMatrixMode(GL_MODELVIEW);
 }
 void init()
 {
-    // Make big points and wide lines
-    glPointSize(3);
-    
+    glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH | GLUT_DOUBLE);
+    glutInitWindowSize(win_width, win_height);
+    glutCreateWindow("Particle System");
+    glColor3ub( 255, 255, 255 );
+    glPointSize( POINT_SIZE );
     glEnable(GL_POINT_SMOOTH);
     glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
-    
-    //Enable transparency
+
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(-LENGTH, LENGTH, -LENGTH, LENGTH, -LENGTH, LENGTH);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
 }
 void mouse_movement(int x, int y ){
     float ww_ratio = float(x)/win_width;
@@ -154,6 +144,7 @@ int main(int argc, char **argv)
     positionUpdater.get()->maxWidth = LENGTH;
     positionUpdater.get()->maxHeight = LENGTH;
     auto velocityUpdater = std::make_shared<VelocityUpdater>();
+    velocityUpdater.get()->updateMaxVelocity(glm::vec3{MAX_VELOCITY});
     auto ageUpdater = std::make_shared<AgeUpdater>();
     auto colorUpdater = std::make_shared<ColorUpdater>();
     gravityUpdater = std::make_shared<GravityUpdater>();
@@ -169,14 +160,14 @@ int main(int argc, char **argv)
     syst.get()->addUpdater(positionUpdater);
     syst.get()->addUpdater(ageUpdater);
 //    syst.get()->addUpdater(colorUpdater);
+
     glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH | GLUT_DOUBLE);
-    glutInitWindowSize(win_width, win_height);
-    glutCreateWindow("Particle System");
+    init();
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
     glutKeyboardFunc(handle_keypress);
     glutPassiveMotionFunc(mouse_movement);
     glutMainLoop();
+
     return 0;
 }

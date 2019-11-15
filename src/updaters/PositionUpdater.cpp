@@ -12,19 +12,15 @@ void PositionUpdater::update(double dt, Container *p) {
         p->position[i] += p->velocity[i] * timeDelta;
         if (p->position[i].x < -maxWidth){
             p->position[i].x = maxWidth;
-            p->velocity[i] /= 100;
         }
         else if (p->position[i].x >= maxWidth){
             p->position[i].x = -maxWidth;
-            p->velocity[i] /= 100;
         }
         if (p->position[i].y <= -maxHeight){
             p->position[i].y = maxHeight;
-            p->velocity[i] /= 100;
         }
         else if (p->position[i].y >= maxHeight){
             p->position[i].y = -maxHeight;
-            p->velocity[i] /= 100;
         }
     }
 }

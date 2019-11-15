@@ -9,7 +9,9 @@
 #include "Updater.h"
 
 class VelocityUpdater : public Updater {
+    glm::vec3 maxVelocity{10};
 public:
+    void updateMaxVelocity(glm::vec3 maxVel) {maxVelocity = maxVel;}
     virtual void update(double dt, Container *p) override;
 };
 
