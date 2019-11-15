@@ -9,8 +9,8 @@
 
 class AccelerationGenerator : public Generator {
     public:
-        glm::vec4 maxAcceleration{5.0};
-        glm::vec4 minAcceleration{-5.0};
+        glm::vec4 maxAcceleration{1.0};
+        glm::vec4 minAcceleration{-1.0};
         void generate(Container *p, size_t startId, size_t endId) override;
 };
 

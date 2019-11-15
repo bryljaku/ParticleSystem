@@ -18,7 +18,6 @@
 class System {
 protected:
     size_t maxNumberOfParticles;
-    std::vector<std::shared_ptr<Emitter>> emitters;
     std::vector<std::shared_ptr<Updater>> updaters;
 public:
     Container container;
@@ -38,6 +37,7 @@ public:
     void addUpdater(std::shared_ptr<Updater> updater) {updaters.push_back(updater);}
     Container  *particles() { return &container; }
     
+    std::vector<std::shared_ptr<Emitter>> emitters;
 };
 
 #endif //MYPARTICLESYSTEM_SYSTEM_H

@@ -8,6 +8,7 @@
 #include <memory>
 #include <bits/unique_ptr.h>
 #include "glm/vec3.hpp"
+#include "glm/vec2.hpp"
 
 void Container::generate(size_t maxNumberOfParticles) {
     maxSize = maxNumberOfParticles;
@@ -18,6 +19,7 @@ void Container::generate(size_t maxNumberOfParticles) {
     color = std::make_unique<glm::vec4[]>(maxSize);
     age = std::make_unique<glm::vec4[]>(maxSize);
     isAlive.reset(new bool[maxSize]);
+    mass.reset(new int[maxSize]);
 }
 
 void Container::wakeParticle(size_t id) {
@@ -27,7 +29,16 @@ void Container::wakeParticle(size_t id) {
         countAlive++;
     }
 }
-
+void Container::killParticles(size_t number) {
+    size_t offset = countAlive - number;
+    if (offset < 0)
+        offset = 0;
+    size_t endId = offset + number;
+    if (endId >= maxSize )
+        endId = maxSize -1;
+    for (int i = offset; i < endId; i++)
+        killParticle(i);
+}
 void Container::killParticle(size_t id) {
     if (countAlive > 0) {
         isAlive[id] = false;

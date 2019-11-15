@@ -5,7 +5,7 @@
 #include "../../headers/emitters/Emitter.h"
 
 void Emitter::emit(Container *particleContainer, double timeDelta) {
-    const size_t numberOfParticlesToEmit = (size_t) timeDelta * emitRate;
+    const size_t numberOfParticlesToEmit = emitRate;
     const size_t startId = particleContainer->countAlive;
     const size_t endId = std::min(startId + numberOfParticlesToEmit, particleContainer->maxSize - 1);
     

@@ -6,9 +6,8 @@
 
 void ColorUpdater::update(double dt, Container *p) {
     size_t endId = p-> countAlive;
-    float timeDelta = (float) dt;
-    
+    float timeDelta = (float) dt / 10000;
     for (size_t i = 0; i < endId; i++) {
-        p->color[i] *=  0.99 ;
+        p->color[i] += timeDelta;
     }
 }

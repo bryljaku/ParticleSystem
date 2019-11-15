@@ -15,6 +15,7 @@ public:
     size_t countAlive;
     size_t maxSize;
     std::unique_ptr<glm::vec4[]> position;
+    std::unique_ptr<int[]> mass;
     std::unique_ptr<glm::vec4[]> color;
     std::unique_ptr<glm::vec4[]> velocity;
     std::unique_ptr<glm::vec4[]> acceleration;
@@ -30,6 +31,7 @@ public:
     void generate(size_t maxParticles);
     void swapParticles(size_t a, size_t b);
     void killParticle(size_t id);
+    void killParticles(size_t number);
     void wakeParticle(size_t id);
 };
 #endif //MYPARTICLESYSTEM_PARTICLECONTAINER_H
