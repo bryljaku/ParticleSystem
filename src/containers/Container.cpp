@@ -13,11 +13,11 @@
 void Container::generate(size_t maxNumberOfParticles) {
     maxSize = maxNumberOfParticles;
     countAlive = 0;
-    acceleration = std::make_unique<glm::vec4[]>(maxSize);
-    position = std::make_unique<glm::vec4[]>(maxSize);
-    velocity = std::make_unique<glm::vec4[]>(maxSize);
-    color = std::make_unique<glm::vec4[]>(maxSize);
-    age = std::make_unique<glm::vec4[]>(maxSize);
+    acceleration = std::make_unique<glm::vec3[]>(maxSize);
+    position = std::make_unique<glm::vec3[]>(maxSize);
+    velocity = std::make_unique<glm::vec3[]>(maxSize);
+    color = std::make_unique<glm::vec3[]>(maxSize);
+    age = std::make_unique<int[]>(maxSize);
     isAlive.reset(new bool[maxSize]);
     mass.reset(new int[maxSize]);
 }

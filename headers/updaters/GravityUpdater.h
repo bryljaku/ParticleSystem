@@ -10,10 +10,10 @@
 
 class GravityUpdater : public Updater {
 private:
-    std::vector<glm::vec4> gravityPoints;
+    glm::vec3 gravityPoint;
+    float forceMagnitude = 10.0f;
 public:
-    void addGravityPoint(glm::vec4 gravityPoint) {gravityPoints.push_back(gravityPoint);}
-    void updateMouseMovement(glm::vec4 mouse) {gravityPoints[0] = mouse;};
+    void updateGravityPoint(glm::vec3 mouse) {gravityPoint = mouse;};
     virtual void update(double dt, Container *p) override;
 };
 

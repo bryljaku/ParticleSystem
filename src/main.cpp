@@ -1,7 +1,7 @@
 #include <vector>
 #include <cstdlib>
 #include <glm/vec3.hpp>
-#include <glm/vec4.hpp>
+#include <glm/vec3.hpp>
 #include <iostream>
 #include "../headers/system/System.h"
 #include "../headers/generators/BasicPositionGenerator.h"
@@ -25,7 +25,7 @@
 #include <GL/glut.h>
 #endif
 
-const float DELTA = 1;
+const float DELTA = 2;
 const int NUMBER_OF_PARTICLES = 3000;
 const float LENGTH = 100.0;
 const int POINT_SIZE = 3;
@@ -37,9 +37,9 @@ const int MIN_MASS = 2;
 const int MAX_MASS = 8;
 const float EMIT_RATE = 5;
 const int FORCE_MAG = 2000;
-const int MAX_PARTICLES = 500;
+const int MAX_PARTICLES = 5000;
 float win_width = 1280, win_height = 720;
-glm::vec4 mouse{1000.0f};
+glm::vec3 mouse{1.0f};
 std::shared_ptr<System> syst;
 std::shared_ptr<GravityUpdater> gravityUpdater;
 void handle_keypress(unsigned char key, int x, int y)
@@ -59,6 +59,11 @@ void handle_keypress(unsigned char key, int x, int y)
     
         case 's':
         case 'S':
+            std::cout << 'x' << syst.get()->particles()->position.get()[0].x << std::endl;
+            std::cout << 'y' << syst.get()->particles()->position.get()[0].y << std::endl;
+            std::cout << 'ax' << syst.get()->particles()->acceleration.get()[0].x << std::endl;
+            std::cout << 'ay' << syst.get()->particles()->acceleration.get()[0].y << std::endl;
+            std::cout << 'a' << syst.get()->particles()->age.get()[0] << std::endl;
             break;
         case 'n':
         case 'N':
@@ -77,16 +82,15 @@ void display(void)
     
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(-50, 50, -50, 50, -1, 1);
-    
+    glOrtho(-LENGTH, LENGTH, -LENGTH, LENGTH, -LENGTH, LENGTH);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     
     glColor3ub( 255, 255, 255 );
     glEnableClientState( GL_VERTEX_ARRAY );
     glEnableClientState( GL_COLOR_ARRAY );
-    glVertexPointer( 2, GL_FLOAT, sizeof(glm::vec4), &syst.get()->container.position.get()[0].x);
-    glColorPointer( 4, GL_FLOAT, sizeof(glm::vec4), &syst.get()->container.color.get()[0].x);
+    glVertexPointer( 2, GL_FLOAT, sizeof(glm::vec3), &syst.get()->container.position.get()[0].x);
+    glColorPointer( 4, GL_FLOAT, sizeof(glm::vec3), &syst.get()->container.color.get()[0].x);
     glPointSize( POINT_SIZE );
     glEnable(GL_POINT_SMOOTH);
     glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
@@ -102,14 +106,38 @@ void display(void)
 
 void reshape(int w, int h)
 {
-    glViewport(0, 0, w, h);
+    //setup windows width and height
+    win_width = (w==0) ? 1 : w;
+    win_height = (h==0) ? 1 : h;
+    
+    //Tell OpenGL how to convert from coordinates to pixel values
+    glViewport(0, 0, win_width, win_height);
+    
+    //Switch to setting the camera perspective
+    glMatrixMode(GL_PROJECTION);
+    
+    //Set the camera perspective
+    glLoadIdentity(); //Reset the camera
+    glOrtho(-LENGTH, LENGTH, -LENGTH, LENGTH, -LENGTH, LENGTH);
+    
+    glMatrixMode(GL_MODELVIEW);
+}
+void init()
+{
+    // Make big points and wide lines
+    glPointSize(3);
+    
+    glEnable(GL_POINT_SMOOTH);
+    glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
+    
+    //Enable transparency
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 void mouse_movement(int x, int y ){
-    float ww_ratio = float(x)/LENGTH;
-    float wh_ratio = float(y)/LENGTH;
-    mouse.x = ww_ratio;
-    mouse.y = wh_ratio;
-    gravityUpdater->updateMouseMovement(mouse);
+    float ww_ratio = float(x)/win_width;
+    float wh_ratio = float(y)/win_height;
+    gravityUpdater->updateGravityPoint(glm::vec3((2*ww_ratio-1)*LENGTH, (1-2*wh_ratio)*LENGTH, 0));
 }
 int main(int argc, char **argv)
 {
@@ -129,7 +157,7 @@ int main(int argc, char **argv)
     auto ageUpdater = std::make_shared<AgeUpdater>();
     auto colorUpdater = std::make_shared<ColorUpdater>();
     gravityUpdater = std::make_shared<GravityUpdater>();
-    gravityUpdater.get()->addGravityPoint(mouse);
+    gravityUpdater.get()->updateGravityPoint(mouse);
     emitter.get()->addGenerator(positionGenerator);
     emitter.get()->addGenerator(colorGenerator);
     emitter.get()->addGenerator(ageGenerator);
@@ -139,9 +167,8 @@ int main(int argc, char **argv)
     syst.get()->addUpdater(gravityUpdater);
     syst.get()->addUpdater(velocityUpdater);
     syst.get()->addUpdater(positionUpdater);
-//    syst.get()->addUpdater(ageUpdater);
-    syst.get()->addUpdater(colorUpdater);
-
+    syst.get()->addUpdater(ageUpdater);
+//    syst.get()->addUpdater(colorUpdater);
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH | GLUT_DOUBLE);
     glutInitWindowSize(win_width, win_height);

@@ -6,9 +6,9 @@
 
 void VelocityUpdater::update(double dt, Container *p) {
     size_t endId = p-> countAlive;
-    float timeDelta = (float) dt / 10000.0;
+    float timeDelta = (float) dt;
     
     for (size_t i = 0; i < endId; i++) {
-        p->velocity[i] +=  p->acceleration[i] * (p->mass[i] * timeDelta / p->velocity[i]);
+        p->velocity[i] +=  p->acceleration[i];
     }
 }

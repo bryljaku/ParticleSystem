@@ -10,8 +10,8 @@
 
 class VelocityGenerator : public Generator {
 public:
-    glm::vec4 maxVelocity{-1.0};
-    glm::vec4 minVelocity{1.0};
+    glm::vec3 maxVelocity{-1.0};
+    glm::vec3 minVelocity{1.0};
     void generate(Container *p, size_t startId, size_t endId) override;
 };
 

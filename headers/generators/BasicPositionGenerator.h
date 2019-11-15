@@ -10,8 +10,8 @@
 
 class BasicPositionGenerator : public Generator {
 public:
-    glm::vec4 maxPosition {1.0};
-    glm::vec4 minPosition {0.0};
+    glm::vec3 maxPosition {50.0};
+    glm::vec3 minPosition {50.0};
     virtual void generate(Container *p, size_t startId, size_t endId) override;
 };
 

@@ -6,16 +6,12 @@
 
 void GravityUpdater::update(double dt, Container *p) {
     size_t endId = p-> countAlive;
-    float timeDelta = (float) dt;
+    float timeDelta = (float) dt / 20.0;
     
-    glm::vec4 dist;
-    for (int i = 0; i < endId; i++)
-        for (int j = 0; j < gravityPoints.size(); j++) {
-            dist.x = p->position[i].x - gravityPoints[j].x;
-            dist.y = p->position[i].y - gravityPoints[j].y;
-            
-            dist = gravityPoints[j] / dist ;
-            dist *= p->mass[i];
-            p->acceleration[i] += dist;
-        }
+    glm::vec3 force{1.0f};
+    for (int i = 0; i < endId; i++){
+            force.x = (gravityPoint.x - p->position[i].x) * timeDelta;
+            force.y = (gravityPoint.y - p->position[i].y) * timeDelta;
+            p->acceleration[i] = force;
+    }
 }

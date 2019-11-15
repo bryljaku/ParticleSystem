@@ -10,8 +10,8 @@
 
 class BasicColorGenerator : public Generator{
 public:
-    glm::vec4 minColor {0.0};
-    glm::vec4 maxColor {1.0};
+    glm::vec3 minColor {0.0};
+    glm::vec3 maxColor {1.0};
     virtual void generate(Container *p, size_t startId, size_t endId) override;
 };
 

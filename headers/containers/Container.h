@@ -9,17 +9,19 @@
 #include <vector>
 #include <memory>
 #include <glm/vec4.hpp>
+#include <glm/vec3.hpp>
+#include <glm/vec2.hpp>
 
 class Container {
 public:
     size_t countAlive;
     size_t maxSize;
-    std::unique_ptr<glm::vec4[]> position;
+    std::unique_ptr<glm::vec3[]> position;
     std::unique_ptr<int[]> mass;
-    std::unique_ptr<glm::vec4[]> color;
-    std::unique_ptr<glm::vec4[]> velocity;
-    std::unique_ptr<glm::vec4[]> acceleration;
-    std::unique_ptr<glm::vec4[]> age;
+    std::unique_ptr<glm::vec3[]> color;
+    std::unique_ptr<glm::vec3[]> velocity;
+    std::unique_ptr<glm::vec3[]> acceleration;
+    std::unique_ptr<int[]> age;
     std::unique_ptr<bool[]> isAlive;
     
     Container() {};
