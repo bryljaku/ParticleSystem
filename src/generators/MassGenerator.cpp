@@ -6,5 +6,5 @@
 
 void MassGenerator::generate(Container *p, size_t startId, size_t endId) {
     for (size_t i = startId; i < endId; i++)
-        p->mass[i] = 1 + rand() % 4;
+        p->mass[i] = 2 + rand() % 4;
 }

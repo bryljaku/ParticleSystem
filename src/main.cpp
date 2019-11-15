@@ -28,10 +28,10 @@
 const float DELTA = 2;
 const int NUMBER_OF_PARTICLES = 3000;
 const float LENGTH = 100.0;
-const int POINT_SIZE = 1;
+const int POINT_SIZE = 5;
 const int MIN_INIT_VELOCITY = 10;
 const int MAX_INIT_VELOCITY = 100;
-const int MAX_VELOCITY =500;
+const int MAX_VELOCITY =400;
 
 const int MIN_MASS = 2;
 const int MAX_MASS = 8;
@@ -159,7 +159,7 @@ int main(int argc, char **argv)
     syst.get()->addUpdater(velocityUpdater);
     syst.get()->addUpdater(positionUpdater);
     syst.get()->addUpdater(ageUpdater);
-//    syst.get()->addUpdater(colorUpdater);
+    syst.get()->addUpdater(colorUpdater);
 
     glutInit(&argc, argv);
     init();
